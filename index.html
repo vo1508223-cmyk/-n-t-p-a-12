@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Địa Lí 12 - Giữa Kỳ II</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #1a73e8;
+        }
+        .section-title {
+            background-color: #e8f0fe;
+            padding: 10px;
+            border-left: 5px solid #1a73e8;
+            margin-top: 30px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .question-box {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .options label:hover {
+            background-color: #f1f3f4;
+        }
+        .tf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .tf-table th, .tf-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .tf-table td.text-left {
+            text-align: left;
+        }
+        .context-box {
+            background: #fff9c4;
+            padding: 10px;
+            border-left: 4px solid #fbc02d;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #1a73e8;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #1557b0;
+        }
+        #result-box {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .correct-answer {
+            color: #155724;
+            background-color: #d4edda;
+            font-weight: bold;
+        }
+        .wrong-answer {
+            color: #721c24;
+            background-color: #f8d7da;
+            text-decoration: line-through;
+        }
+        .feedback {
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>ĐỀ CƯƠNG ÔN TẬP GIỮA KỲ II - ĐỊA LÍ 12</h1>
+    <p style="text-align: center;">Trường THPT Nguyễn Thiện Thuật | Năm học 2025-2026</p>
+    
+    <div id="result-box"></div>
+
+    <form id="quizForm">
+        <div class="section-title">PHẦN I: Câu trắc nghiệm nhiều phương án lựa chọn</div>
+        <div id="part1-container"></div>
+
+        <div class="section-title">PHẦN II: Câu trắc nghiệm Đúng/Sai</div>
+        <p><i>Trong mỗi ý a, b, c, d ở mỗi câu, thí sinh chọn Đúng hoặc Sai.</i></p>
+        <div id="part2-container"></div>
+
+        <button type="submit" class="btn-submit">NỘP BÀI VÀ XEM ĐIỂM</button>
+    </form>
+</div>
+
+<script>
+    // Dữ liệu Phần 1 (Đã chèn đáp án chuẩn dựa trên kiến thức Địa lí 12)
+    const part1Data = [
+        { id: 1, q: "Hoạt động xuất khẩu của nước ta hiện nay", opts: {A: "có thị trường chủ yếu là ở châu Phi.", B: "bạn hàng ngày càng đa dạng hơn.", C: "rất ít thành phần kinh tế tham gia.", D: "các mặt hàng chủ đạo là máy móc."}, ans: "B" },
+        { id: 2, q: "Tuyến đường sắt nào sau đây dài nhất nước ta hiện nay?", opts: {A: "Hà Nội - Lào Cai.", B: "Hà Nội - Đồng Đăng.", C: "Lưu Xá - Kép - Uông Bí - Bãi Cháy.", D: "Thống Nhất."}, ans: "D" },
+        { id: 3, q: "Hoạt động nội thương nước ta hiện nay phát triển mạnh nhất ở vùng nào sau đây?", opts: {A: "Đông Nam Bộ.", B: "Bắc Trung Bộ.", C: "Tây Nguyên.", D: "Đồng bằng sông Cửu Long."}, ans: "A" },
+        { id: 4, q: "Nhà máy thủy điện nào sau đây có công suất lớn nhất ở vùng Trung du và miền núi Bắc Bộ nước ta hiện nay?", opts: {A: "Hòa Bình.", B: "Thác Bà.", C: "Sơn La.", D: "Yaly."}, ans: "C" },
+        { id: 5, q: "Nguyên nhân chủ yếu tổng mức bản lẻ hàng hoá và doanh thu dịch vụ tiêu dùng của nước ta tăng nhanh và liên tục là", opts: {A: "thương mại điện tử tăng trưởng nhanh.", B: "hệ thống bán hàng mở rộng, hiện đại hoá.", C: "thị trường trong nước lớn, sức mua tăng.", D: "nội thương khác nhau giữa các vùng, khu vực."}, ans: "C" },
+        { id: 6, q: "Xu hướng phát triển du lịch được chú trọng ở nước ta hiện nay là", opts: {A: "mở rộng thị trường, du lịch ảo.", B: "đa dạng loại hình du lịch, chuyển đổi số.", C: "phát triển ổn định, tăng trưởng xanh.", D: "du lịch bền vững, du lịch thông minh."}, ans: "D" },
+        { id: 7, q: "Loại hình vận tải có khối lượng vận chuyển hàng hoá lớn nhất nước ta hiện nay là", opts: {A: "đường biển.", B: "đường nội thuỷ.", C: "đường hàng không.", D: "đường bộ."}, ans: "D" },
+        { id: 8, q: "Mặt hàng nhập khẩu chủ yếu của nước hiện nay là", opts: {A: "may mặc", B: "máy móc", C: "nông sản.", D: "thuỷ sản."}, ans: "B" },
+        { id: 9, q: "Nhà máy nhiệt điện nào sau đây ở nước ta hiện nay chạy bằng khí?", opts: {A: "Phú Mỹ", B: "Quảng Ninh.", C: "Vũng Áng.", D: "Phả Lại"}, ans: "A" },
+        { id: 10, q: "Phát biểu nào sau đây đúng với ngành bưu chính?", opts: {A: "Doanh thu còn thấp nhưng có tốc độ tăng trưởng nhanh.", B: "Đẩy mạnh phát triển các loại hình dịch vụ truyền thống.", C: "Mạng lưới phân bố rộng khắp, phát triển mạnh ở đồi núi.", D: "Dịch vụ bưu chính còn đơn giản, hiệu quả kinh tế thấp."}, ans: "A" },
+        { id: 11, q: "Đặc điểm nào dưới đây của khí hậu không gây ảnh hưởng tiêu cực tới hoạt động sản xuất công nghiệp?", opts: {A: "Độ ẩm cao.", B: "Nhiều thiên tai, bão lũ.", C: "Nền nhiệt trung bình cao, số giờ nắng nhiều.", D: "Khí hậu phân mùa rõ rệt."}, ans: "C" },
+        { id: 12, q: "Phát biểu nào sau đây không đúng về công nghiệp khai thác than ở nước ta", opts: {A: "Trữ lượng khá lớn, tập trung chủ yếu ở bể than Đông Bắc.", B: "Phục vụ sản xuất điện, các ngành công nghiệp, xuất khẩu.", C: "Việc khai thác và sử dụng không ảnh hưởng môi trường.", D: "Ứng dụng máy móc và công nghệ để nâng cao năng suất."}, ans: "C" },
+        { id: 13, q: "Nhận xét nào sau đây đúng với biểu đồ Diện tích và sản lượng hồ tiêu của nước ta (2017 - 2022)?", opts: {A: "Diện tích hồ tiêu tăng liên tục, sản lượng hồ tiêu giảm liên tục.", B: "Sản lượng hồ tiêu tăng liên tục, diện tích hồ tiêu giảm liên tục.", C: "Diện tích hồ tiêu giảm liên tục, sản lượng hồ tiêu tăng không liên tục.", D: "Sản lượng hồ tiêu giảm không liên tục, diện tích hồ tiêu giảm liên tục."}, ans: "C" },
+        { id: 14, q: "Phát biểu nào sau đây không đúng về công nghiệp khai thác dầu thô ở nước ta", opts: {A: "Liên doanh, hợp tác với nước ngoài trong thăm dò, khai thác.", B: "Bắt đầu khai thác từ thế kỉ XX tại Bạch Hổ, sau dần mở rộng.", C: "Sản lượng liên tục tăng qua các năm và hiện nay tăng nhanh.", D: "Sản phẩm đã cung cấp cho các nhà máy lọc dầu và xuất khẩu"}, ans: "C" },
+        { id: 15, q: "Sản phẩm của công nghiệp chế biến sản phẩm trồng trọt nước ta", opts: {A: "đa dạng.", B: "đơn điệu.", C: "rất ít.", D: "không đổi."}, ans: "A" },
+        { id: 16, q: "Sản phẩm nào sau đây thuộc công nghiệp chế biến sản phẩm trồng trọt ở nước ta?", opts: {A: "Thịt, sữa.", B: "Tôm, cá.", C: "Nước mắm.", D: "Đường mía."}, ans: "D" },
+        { id: 17, q: "Sản phẩm nào sau đây thuộc công nghiệp chế biến sản phẩm chăn nuôi ở nước ta?", opts: {A: "Thịt, sữa.", B: "Tôm, cá.", C: "Nước mắm.", D: "Hồ tiêu."}, ans: "A" },
+        { id: 18, q: "Biểu đồ thích hợp nhất để thể hiện sản lượng điện (tỉ kWh) và cơ cấu sản lượng điện (%) của nước ta giai đoạn 2010 - 2021 là", opts: {A: "cột.", B: "đường.", C: "kết hợp.", D: "tròn."}, ans: "C" },
+        { id: 19, q: "Dạng biểu đồ thích hợp nhất để thể hiện TỐC ĐỘ TĂNG của một số sản phẩm chủ yếu của công nghiệp sản xuất sản phẩm điện tử, máy vi tính của nước ta giai đoạn 2010 - 2021 là", opts: {A: "miền.", B: "đường.", C: "tròn.", D: "kết hợp."}, ans: "B" },
+        { id: 20, q: "Công nghiệp nước ta hiện nay chuyển dịch theo hướng", opts: {A: "Tăng tỉ trọng sản phẩm có giá trị cao.", B: "Phân bố đồng đều tại khắp các vùng.", C: "Giảm tối đa sở hữu ngoài nhà nước.", D: "Tập trung nhiều cho việc khai khoáng."}, ans: "A" },
+        { id: 21, q: "Những nơi có nguồn nước khoáng, nước nóng thuận lợi cho phát triển loại hình du lịch nào sau đây?", opts: {A: "Du lịch cộng đồng.", B: "Du lịch mua sắm.", C: "Du lịch chăm sóc sức khỏe.", D: "Du lịch sinh thái."}, ans: "C" },
+        { id: 22, q: "Những địa phương có lịch sử văn hoá lâu đời với các bản sắc văn hoá đặc sắc, đa dạng thuận lợi cho phát triển loại hình du lịch nào sau đây?", opts: {A: "Du lịch mạo hiểm.", B: "Du lịch mua sắm.", C: "Du lịch văn hoá.", D: "Du lịch nghỉ dưỡng"}, ans: "C" },
+        { id: 23, q: "Ngành kinh tế nào sau đây không thuộc nhóm ngành dịch vụ?", opts: {A: "Bưu chính viễn thông.", B: "Du lịch.", C: "Tài chính ngân hàng.", D: "Nuôi trồng thủy hải sản."}, ans: "D" },
+        { id: 24, q: "Phát biểu nào sau đây không đúng với đường thuỷ nội địa ở nước ta?", opts: {A: "Mạng lưới rộng khắp cả nước.", B: "Chủ yếu vận chuyển hàng hoá.", C: "Kết nối với đường bộ hạn chế.", D: "Chịu tác động lớn của tự nhiên."}, ans: "C" },
+        { id: 25, q: "Giao thông vận tải đường biển nước ta", opts: {A: "có hệ thống cảng biển gắn với các trung tâm kinh tế lớn.", B: "có khối lượng hàng hoá vận chuyển và luân chuyển giảm.", C: "đứng đầu các ngành giao thông về vận chuyển hành khách.", D: "có các tuyến đường đi đến tất cả các quốc gia trên thế giới."}, ans: "A" },
+        { id: 26, q: "Điều kiện thuận lợi để phát triển giao thông biển ở nước ta là", opts: {A: "vùng biển rộng và nhiều vịnh sâu.", B: "vận chuyển được nhiều hàng hoá.", C: "có các tuyến đường biển quốc tế.", D: "phát triển và nâng cấp nhiều cảng."}, ans: "A" },
+        { id: 27, q: "Phát biểu nào sau đây không đúng với viễn thông nước ta hiện nay?", opts: {A: "Mạng lưới có sự phát triển nhanh, đa dạng.", B: "Phát triển theo hướng hiện đại và rộng khắp.", C: "Điện thoại cố định được dùng phổ biến nhất.", D: "Mạng lưới kết nối đồng bộ, dung lượng lớn."}, ans: "C" },
+        { id: 28, q: "Mạng viễn thông truyền dẫn ở nước ta hội nhập với quốc tế qua", opts: {A: "hệ thống vệ tinh và cáp quang.", B: "cáp quang và đài truyền hình.", C: "ra-đi-ô và điện thoại cố định.", D: "telegram và thư tín, máy fax."}, ans: "A" },
+        { id: 29, q: "Trong cơ cấu ngành công nghiệp nước ta hiện nay giảm tỉ trọng nhóm ngành khai khoáng, tăng nhóm ngành chế biến, chế tạo nhằm mục đích chủ yếu", opts: {A: "tạo sản phẩm chủ lực, góp phần giải quyết việc làm.", B: "bảo vệ nguồn tài nguyên, công nghệ phát triển.", C: "đáp ứng nhu cầu thị trường, thu hút vốn đầu tư.", D: "trình độ lao động cao, nhu cầu thị trường lớn."}, ans: "B" },
+        { id: 30, q: "Việc chuyển dịch cơ cấu kinh tế trong khu vực dịch vụ của nước ta diễn ra theo hướng", opts: {A: "tập trung vào phát triển các ngành công nghiệp nền tảng.", B: "tập trung các ngành có hàm lượng tri thức, công nghệ cao.", C: "ưu tiên các ngành truyền thống và có nhiều kinh nghiệm.", D: "mở rộng các vùng nông nghiệp hữu cơ, nông nghiệp sạch."}, ans: "B" },
+        { id: 31, q: "Cơ cấu ngành công nghiệp dầu khí nước ta hiện nay", opts: {A: "đáp ứng đầy đủ nhu cầu trong nước.", B: "thu hút nhiều vốn đầu tư nước ngoài.", C: "cơ sở vật chất kĩ thuật chưa tiến bộ.", D: "tập trung ở thềm lục địa phía Bắc."}, ans: "B" },
+        { id: 32, q: "Ở nước ta, những năm gần đây tỉ trọng công nghiệp chế biến trong giá trị sản xuất công nghiệp tăng lên do nguyên nhân chủ yếu nào sau đây?", opts: {A: "Thị trường tiêu thụ mở rộng, hiệu quả kinh tế cao, đa dạng ngành nghề.", B: "Thu hút lao động chuyên môn cao, nguyên liệu phong phú, tạo việc làm.", C: "Mang lại hiệu quả cao về kinh tế, thu hút đầu tư lớn, chính sách ưu tiên.", D: "Mở rộng hội nhập quốc tế, đầu tư cơ sở chế biến, nguồn lao động đông."}, ans: "A" },
+        { id: 33, q: "Ngành giao thông vận tải đường biển nước ta hiện nay", opts: {A: "ngành non trẻ và phát triển nhanh.", B: "đội ngũ lao động có chuyên môn cao.", C: "mạng lưới phủ rộng khắp cả nước.", D: "vận chuyển nhiều hàng hóa xuất khẩu."}, ans: "D" },
+        { id: 34, q: "Yếu tố nào sau đây đóng vai trò quan trọng nhất thu hút đầu tư nước ngoài vào các khu công nghiệp ở nước ta?", opts: {A: "Giao thông vận tải hiện đại nhất.", B: "Tài nguyên phong phú, trữ lượng lớn.", C: "Lao động dồi dào, chính sách mở cửa.", D: "Truyền thống sản xuất lâu đời."}, ans: "C" },
+        { id: 35, q: "Trong cơ cấu GDP phân theo ngành kinh tế của nước ta, tỉ trọng của ngành nào sau đây đang có xu hướng tăng?", opts: {A: "Dịch vụ.", B: "Nông nghiệp.", C: "Lâm nghiệp.", D: "Thủy sản."}, ans: "A" },
+        { id: 36, q: "Việc các khu công nghệ cao của nước ta phân bố tập trung ở các đô thị lớn chủ yếu do tác động của nhân tố nào sau đây?", opts: {A: "Có vị trí địa lí xa khu dân cư để đảm bảo an ninh và bảo vệ môi trường.", B: "Có quỹ đất nông nghiệp rộng lớn thuận lợi cho việc giải phóng mặt bằng.", C: "Có hạ tầng khoa học công nghệ hiện đại và nguồn lao động trình độ cao.", D: "Sẵn có nguồn tài nguyên khoáng sản và năng lượng tại chỗ rất phong phú."}, ans: "C" },
+        { id: 37, q: "Đặc điểm nào sau đây không đúng với các trung tâm công nghiệp ở nước ta?", opts: {A: "Chỉ gồm các xí nghiệp của Nhà nước.", B: "Có mối liên hệ chặt chẽ về kĩ thuật.", C: "Là hạt nhân phát triển kinh tế vùng.", D: "Gắn liền với các đô thị vừa và lớn."}, ans: "A" },
+        { id: 38, q: "Căn cứ vào biểu đồ GDP bình quân đầu người, cho biết mức tăng tuyệt đối của GDP bình quân đầu người nước ta cao nhất ở giai đoạn nào sau đây?", opts: {A: "Giai đoạn từ năm 2023 đến năm 2024.", B: "Giai đoạn từ năm 2020 đến năm 2021.", C: "Giai đoạn từ năm 2021 đến năm 2022.", D: "Giai đoạn từ năm 2022 đến năm 2023."}, ans: "A" },
+        { id: 39, q: "Ngành công nghiệp nào sau đây được xác định là ngành kinh tế trọng điểm của nước ta?", opts: {A: "Luyện kim và cơ khí.", B: "Sản xuất và lắp ráp máy bay.", C: "Chế biến lương thực, thực phẩm.", D: "Công nghiệp vũ trụ, hạt nhân."}, ans: "C" },
+        { id: 40, q: "Công nghiệp chế biến chè phân bố tập trung ở Trung du và miền núi phía Bắc chủ yếu do", opts: {A: "gần thị trường tiêu thụ.", B: "có mạng lưới điện rộng khắp.", C: "gần các vùng nguyên liệu.", D: "có nguồn lao động dồi dào."}, ans: "C" }
+    ];
+
+    // Dữ liệu Phần 2 (T/F logic)
+    const part2Data = [
+        {
+            id: 1, 
+            context: "Cho thông tin sau: Theo số liệu thống kê năm 2024, khách quốc tế đến Việt Nam đạt trên 17,5 triệu lượt, tăng 39,5% so với năm trước, tổng số khách du lịch nội địa tăng lên và đạt khoảng 110 triệu lượt. Tổng thu từ khách du lịch đạt khoảng 840 nghìn tỉ đồng.",
+            stmts: [
+                { l: "a", t: "Năm 2024, khách du lịch quốc tế tăng ít chủ yếu do tài nguyên du lịch nước ta đa dạng.", ans: "S" },
+                { l: "b", t: "Số lượt khách du lịch nội địa ít hơn khách du lịch quốc tế.", ans: "S" },
+                { l: "c", t: "Du lịch tạo ra nhiều việc làm, thúc đẩy giao thông vận tải, thương mại phát triển.", ans: "Đ" },
+                { l: "d", t: "Giải pháp chủ yếu nhằm đẩy mạnh phát triển du lịch ở nước ta hiện nay là tăng cường quảng bá, đa dạng loại hình du lịch và nâng cao chất lượng dịch vụ.", ans: "Đ" }
+            ]
+        },
+        {
+            id: 2, 
+            context: "Cho thông tin sau: Dịch vụ là ngành kinh tế quan trọng. Nước ta có nhiều điều kiện phát triển ngành dịch vụ như: vị trí địa lí, địa hình, khí hậu, kinh tế, dân cư...",
+            stmts: [
+                { l: "a", t: "Cơ cấu ngành dịch vụ ở nước ta ngày càng đa dạng.", ans: "Đ" },
+                { l: "b", t: "Trình độ phát triển kinh tế, chính sách phát triển kinh tế tác động đến quy mô và cơ cấu ngành dịch vụ.", ans: "Đ" },
+                { l: "c", t: "Vị trí địa lí, các điều kiện tự nhiên là điều kiện quan trọng để đáp ứng các tiêu chuẩn toàn cầu trong ngành dịch vụ.", ans: "S" },
+                { l: "d", t: "Điều kiện về lịch sử, văn hoá là cơ sở chủ yếu để thúc đẩy phân công lao động dịch vụ theo lãnh thổ.", ans: "S" }
+            ]
+        },
+        {
+            id: 3, 
+            context: "Trị giá xuất khẩu hàng hoá phân theo nhóm hàng của nước ta giai đoạn 2018 – 2021 (Nông sản: 17484.6 -> 16593.6 -> 16027.7 -> 18311.0)",
+            stmts: [
+                { l: "a", t: "Cơ cấu hàng hoá xuất khẩu của nước ta khá đa dạng.", ans: "Đ" },
+                { l: "b", t: "Nhóm hàng công nghiệp chế biến chiếm tỉ trọng cao nhất và tăng liên tục.", ans: "Đ" },
+                { l: "c", t: "So với năm 2018, đến năm 2021 các nhóm hàng đều tăng.", ans: "S" },
+                { l: "d", t: "Nông sản và nông sản chế biến có tốc độ tăng trưởng liên tục.", ans: "S" }
+            ]
+        },
+        {
+            id: 4, 
+            context: "Tổng mức bán lẻ hàng hóa và doanh thu dịch vụ tiêu dùng (nghìn tỉ đồng): 2010 (1677.3) -> 2022 (5363.3)",
+            stmts: [
+                { l: "a", t: "Tổng mức bán lẻ hàng hóa và doanh thu dịch vụ tiêu dùng có xu hướng tăng.", ans: "Đ" },
+                { l: "b", t: "Tổng mức bán lẻ hàng hóa và doanh thu dịch vụ tiêu dùng năm 2022 tăng gấp khoảng 3,2 lần so với năm 2010.", ans: "Đ" },
+                { l: "c", t: "Tổng mức bán lẻ hàng hóa và doanh thu dịch vụ tiêu dùng giai đoạn 2015-2022 tăng nhanh hơn giai đoạn 2010- 2015.", ans: "Đ" },
+                { l: "d", t: "Tổng mức bán lẻ hàng hóa và doanh thu dịch vụ tiêu dùng giai đoạn 2010-2022 tăng 3,685 nghìn tỉ đồng.", ans: "S" }
+            ]
+        },
+        {
+            id: 5, 
+            context: "Năm 2022, kim ngạch xuất khẩu đạt 371,3 tỷ USD, nhập khẩu 358,9 tỷ USD. Trung Quốc là thị trường nhập khẩu lớn nhất (117,9 tỷ USD)...",
+            stmts: [
+                { l: "a", t: "Năm 2022, nước ta là nước xuất siêu với giá trị đạt 12,4 tỷ USD.", ans: "Đ" },
+                { l: "b", t: "Nước ta xuất siêu với các nước: Hoa Kỳ, Hàn Quốc và Nhật Bản.", ans: "S" },
+                { l: "c", t: "Nước ta nhập siêu với Trung Quốc, khu vực EU và ASEAN.", ans: "S" },
+                { l: "d", t: "Những năm gần đây, thị trường nhập khẩu chủ yếu của nước ta là Trung Quốc.", ans: "Đ" }
+            ]
+        },
+        {
+            id: 6, 
+            context: "Biểu đồ Số lượt khách du lịch quốc tế đến và doanh thu du lịch ở khu vực Đông Nam Á giai đoạn 2005 - 2023.",
+            stmts: [
+                { l: "a", t: "So với năm 2005, số lượt khách du lịch đến tăng thêm 89,2 triệu lượt người (đến năm 2019).", ans: "Đ" },
+                { l: "b", t: "Năm 2023, doanh thu du lịch và số lượt khách du lịch đến đạt cao nhất.", ans: "S" },
+                { l: "c", t: "Doanh thu du lịch tăng nhanh, giai đoạn 2005 - 2023 tăng thêm khoảng 154,1%.", ans: "Đ" },
+                { l: "d", t: "Giai đoạn 2019 - 2023 doanh thu và số lượt khách giảm chủ yếu do tác động của đại dịch Covid-19.", ans: "Đ" }
+            ]
+        },
+        {
+            id: 7, 
+            context: "Công nghiệp sản xuất sản phẩm điện tử, máy vi tính là ngành xuất hiện muộn hơn so với các ngành công nghiệp khác. Cơ cấu đa dạng...",
+            stmts: [
+                { l: "a", t: "Công nghiệp sản xuất sản phẩm điện tử, máy vi tính là ngành xuất hiện muộn, chủ yếu là sản xuất điện tử, máy tính và thực phẩm.", ans: "S" },
+                { l: "b", t: "Công nghiệp sản xuất sản phẩm điện tử, máy vi tính ở nước ta đang phát triển mạnh vùng trung du và miền núi.", ans: "S" },
+                { l: "c", t: "Nước ta thu hút được nguồn vốn ĐTNN lớn cho ngành này chủ yếu do có lao động trẻ, dồi dào và giá rẻ.", ans: "Đ" },
+                { l: "d", t: "Giải pháp để phát triển ngành này là đầu tư hạ tầng, nâng cao trình độ lao động và thu hút vốn đầu tư.", ans: "Đ" }
+            ]
+        },
+        {
+            id: 8, 
+            context: "Nghị quyết số 29-NQ/TW: Chuyển dịch cơ cấu công nghiệp theo hướng giảm tỉ trọng các ngành sử dụng nhiều lao động và tài nguyên, tăng tỉ trọng các ngành công nghiệp công nghệ cao...",
+            stmts: [
+                { l: "a", t: "Định hướng chuyển dịch cơ cấu là tăng cường phát triển các ngành khai thác tài nguyên thô.", ans: "S" },
+                { l: "b", t: "Việc phát triển khu công nghiệp sinh thái phản ánh xu hướng tăng trưởng xanh và phát triển bền vững.", ans: "Đ" },
+                { l: "c", t: "Các ngành công nghiệp sử dụng nhiều lao động sẽ bị xóa bỏ hoàn toàn trong giai đoạn tới.", ans: "S" },
+                { l: "d", t: "Công nghiệp năng lượng và cơ khí chế tạo được xác định là những ngành then chốt cần ưu tiên phát triển.", ans: "Đ" }
+            ]
+        },
+        {
+            id: 9, 
+            context: "Năm 2023, trị giá xuất khẩu là 355,5 tỉ USD, nhập khẩu là 327,5 tỉ USD. Mặt hàng nhập khẩu chủ yếu là máy móc, thiết bị...",
+            stmts: [
+                { l: "a", t: "Mặt hàng xuất khẩu nước ta ngày càng đa dạng trên thị trường.", ans: "Đ" },
+                { l: "b", t: "Năm 2023, trị giá xuất khẩu của nước ta thấp hơn trị giá nhập khẩu.", ans: "S" },
+                { l: "c", t: "Nước ta nhập khẩu chủ yếu là máy móc, thiết bị hiện đại để nâng cao năng suất, sức cạnh tranh.", ans: "Đ" },
+                { l: "d", t: "Năm 2023, trị giá xuất khẩu hàng hóa của nước ta chiếm khoảng 52,0% trong tổng kim ngạch xuất nhập khẩu.", ans: "Đ" }
+            ]
+        }
+    ];
+
+    // Render HTML
+    const p1Container = document.getElementById('part1-container');
+    part1Data.forEach(q => {
+        let optionsHTML = '';
+        for (const [key, val] of Object.entries(q.opts)) {
+            optionsHTML += `
+                <label id="lbl-p1-${q.id}-${key}">
+                    <input type="radio" name="p1_q${q.id}" value="${key}"> 
+                    <strong>${key}.</strong> ${val}
+                </label>
+            `;
+        }
+        p1Container.innerHTML += `
+            <div class="question-box" id="box-p1-${q.id}">
+                <div class="question-text">Câu ${q.id}: ${q.q}</div>
+                <div class="options">${optionsHTML}</div>
+                <div class="feedback" id="fb-p1-${q.id}"></div>
+            </div>
+        `;
+    });
+
+    const p2Container = document.getElementById('part2-container');
+    part2Data.forEach(q => {
+        let rowsHTML = '';
+        q.stmts.forEach(s => {
+            rowsHTML += `
+                <tr id="row-p2-${q.id}-${s.l}">
+                    <td class="text-left"><strong>${s.l})</strong> ${s.t}</td>
+                    <td><input type="radio" name="p2_q${q.id}_${s.l}" value="Đ"></td>
+                    <td><input type="radio" name="p2_q${q.id}_${s.l}" value="S"></td>
+                </tr>
+            `;
+        });
+        p2Container.innerHTML += `
+            <div class="question-box">
+                <div class="question-text">Câu ${q.id}:</div>
+                <div class="context-box">${q.context}</div>
+                <table class="tf-table">
+                    <thead>
+                        <tr>
+                            <th>Phát biểu</th>
+                            <th width="80px">Đúng</th>
+                            <th width="80px">Sai</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rowsHTML}</tbody>
+                </table>
+                <div class="feedback" id="fb-p2-${q.id}"></div>
+            </div>
+        `;
+    });
+
+    // Handle Submit
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        let p1Score = 0;
+        let p2Score = 0;
+
+        // Check Part 1
+        part1Data.forEach(q => {
+            const selected = document.querySelector(`input[name="p1_q${q.id}"]:checked`);
+            const fb = document.getElementById(`fb-p1-${q.id}`);
+            
+            // Xóa highlight cũ
+            for(let k in q.opts) document.getElementById(`lbl-p1-${q.id}-${k}`).className = '';
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    p1Score++;
+                    document.getElementById(`lbl-p1-${q.id}-${selected.value}`).classList.add('correct-answer');
+                    fb.innerHTML = `<span style="color:green">✔ Chính xác!</span>`;
+                } else {
+                    document.getElementById(`lbl-p1-${q.id}-${selected.value}`).classList.add('wrong-answer');
+                    document.getElementById(`lbl-p1-${q.id}-${q.ans}`).classList.add('correct-answer');
+                    fb.innerHTML = `<span style="color:red">✘ Bạn chọn sai. Đáp án đúng là ${q.ans}</span>`;
+                }
+            } else {
+                document.getElementById(`lbl-p1-${q.id}-${q.ans}`).classList.add('correct-answer');
+                fb.innerHTML = `<span style="color:orange">⚠ Bạn chưa trả lời. Đáp án đúng là ${q.ans}</span>`;
+            }
+        });
+
+        // Check Part 2
+        let totalP2Statements = 0;
+        part2Data.forEach(q => {
+            const fb = document.getElementById(`fb-p2-${q.id}`);
+            let qCorrectCount = 0;
+            
+            q.stmts.forEach(s => {
+                totalP2Statements++;
+                const selected = document.querySelector(`input[name="p2_q${q.id}_${s.l}"]:checked`);
+                const row = document.getElementById(`row-p2-${q.id}-${s.l}`);
+                row.className = ''; // reset
+                
+                if (selected) {
+                    if (selected.value === s.ans) {
+                        qCorrectCount++;
+                        p2Score++;
+                        row.style.backgroundColor = '#d4edda'; // green
+                    } else {
+                        row.style.backgroundColor = '#f8d7da'; // red
+                    }
+                } else {
+                    row.style.backgroundColor = '#fff3cd'; // yellow (unanswered)
+                }
+            });
+            fb.innerHTML = `<strong>Kết quả câu ${q.id}:</strong> Bạn làm đúng ${qCorrectCount}/${q.stmts.length} ý.`;
+        });
+
+        // Display Result
+        const resBox = document.getElementById('result-box');
+        resBox.style.display = 'block';
+        resBox.innerHTML = `
+            🎉 HOÀN THÀNH BÀI TẬP 🎉<br>
+            Phần I: Đúng ${p1Score} / ${part1Data.length} câu.<br>
+            Phần II: Đúng ${p2Score} / ${totalP2Statements} ý.<br>
+            <span style="font-size: 0.8em; color: #555;">(Các lựa chọn sai của bạn đã bị gạch đỏ, lựa chọn đúng được tô xanh).</span>
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+
+</body>
+</html>
